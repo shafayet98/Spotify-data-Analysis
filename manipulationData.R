@@ -8,14 +8,11 @@ df <- df[!duplicated(df[1]),]
 write.csv(df,file = "spotifyTopListenedTrackAnalysi-final.csv")
 df <- read.csv('spotifyTopListenedTrackAnalysi-final.csv')
 
-
 # Visualization starts
 View(df)
 library(ggplot2)
 library(dplyr)
-install.packages("ggpubr")
 library(ggpubr)
-install.packages("reshape2")
 library(reshape2)
 
 # As these are the songs I have listened more. What is most of the track's popularity 
@@ -148,7 +145,6 @@ key_enery <- ggplot(df_new, aes(x=energy, fill=key)) +
 key_loudness <- ggplot(df_new, aes(x=loudness, fill=key)) + 
   geom_boxplot() +
   facet_wrap(~key)
-
 
 # Heat-map Correlation
 colnames(df_new)
