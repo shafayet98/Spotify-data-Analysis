@@ -53,6 +53,13 @@ ggplot(df, aes(x = loudness, y = energy))+
 # creating A new column based on popularity
 # using dplyr
 
+
+#  (Solution - 01)
+df_test <- tbl_df(df) 
+df_test <- mutate(df_test, popularity_class = cut(df$track.Popularity, breaks = 5))
+View(df_test)
+
+#  (Solution -02)
 df_new <- tbl_df(df) 
 dim(df_new)
 df_new <- mutate( df_new, popularity_class = ifelse( df_new$track.Popularity >= 1 & df_new$track.Popularity <= 20,"E",
@@ -65,7 +72,17 @@ df_new <- mutate( df_new, popularity_class = ifelse( df_new$track.Popularity >= 
 
 # interesting most popular track (what i listen) has either high Acoustic-ness or Low Acoustic-ness
 # nothing in the middle
+
+#  (Solution - 01)
 ggplot(df_new, aes(x = acousticness, y = track.Popularity, color = popularity_class))+ 
+  theme_bw()+ 
+  geom_point()+
+  labs(x = "acousticness of track",
+       y = "Popularity of track",
+       title = "Acoustic-ness effects on popularity")
+
+#  (Solution - 02)
+ggplot(df_test, aes(x = acousticness, y = track.Popularity, color = popularity_class))+ 
   theme_bw()+ 
   geom_point()+
   labs(x = "acousticness of track",
