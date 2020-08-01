@@ -16,48 +16,45 @@ library(ggpubr)
 library(reshape2)
 
 # As these are the songs I have listened more. What is most of the track's popularity 
-# lies on the graph?Can I draw a statement that, my favourites have have specific 
+# lies on the graph? Can I draw a statement that, my favorites have have specific 
 # range of popularity?
 
 ggplot(df, aes(x = track.Popularity))+
   theme_bw() +
   geom_density( alpha= 0.5, fill = "#FF6666") +
   labs( x ="Popularity of tracks",
-        title = "Popularity of songs")
+        title = "Distribution of the popularity of tracks")
 
 # If I group the tracks according to keys. What is the key that has most of the song, 
-# technically speaking, What is my most favourite Key? 
-
+# technically speaking, What is my most favorite Key? 
 df$key <- as.factor(df$key)
-# cbPalette <- c("#011a33", "#022448", "#1b426b", "#284a6f", "#33526f", "#33526f", "#405a73", "#325c84","4d7195","6685a2","809ab3","#000","#6385a2","109ab3")
-# length(cbPalette)
 ggplot(df, aes(x = key, fill = key))+
   theme_bw()+
   geom_bar()+
   scale_fill_discrete(name="Pitches", labels=c("0-C", "1-C# Db", "2-D","3-D# Eb","4-E","5-F","6-F# Gb","7-G","8-G# Ab","9-A","10-A# Bb","11-B"))+
-  labs(x = "Keys",
-       y = "number of tracks",
-       title = "Keys along with track counts")
+  labs(x = "Keys of tracks",
+       y = "Number of tracks",
+       title = "Number of tracks Vs. Keys")
 
 # Does loud songs mean more energetic songs? most of the energy measured by loudness? 
 ggplot(df, aes(x = loudness, y = energy))+ 
   theme_bw()+ 
   geom_point()+
   geom_smooth(method = "lm")+
-  labs(x = "loudness of track",
-         y = "energy of tracks",
-         title = "Effect of loudness in Measuring Energy")
+  labs(x = "Loudness of track",
+         y = "Energy of tracks",
+         title = "Energy Vs. Loudness")
 
 
-# Does loudness and energy effects on track popularity?
-# creating A new column based on popularity
-# using dplyr
+# In my most played tracks what is the distribution of acoustic-ness? Do I prefer listening 
+# tracks those have specific acoustic range?
 
 
 #  (Solution - 01)
 df_test <- tbl_df(df) 
 df_test <- mutate(df_test, popularity_class = cut(df$track.Popularity, breaks = 5))
 View(df_test)
+
 
 #  (Solution -02)
 df_new <- tbl_df(df) 
@@ -68,35 +65,45 @@ df_new <- mutate( df_new, popularity_class = ifelse( df_new$track.Popularity >= 
                                                                    ifelse(df_new$track.Popularity > 60 & df_new$track.Popularity <= 80, "B",
                                                                           ifelse(df_new$track.Popularity > 80, "A","NULL" ) ) ) ) ) )
 
+# V-1 (using density plot)
+# Distribution of Acoustic-ness of my most listened songs
+ggplot(df_new, aes(x = acousticness))+
+  theme_bw() +
+  geom_density( alpha= 0.5, fill = "#0a5b96") +
+  labs( x ="Acousticness of tracks",
+        title = "Distribution of the Acousticness of tracks")
 
-
-# interesting most popular track (what i listen) has either high Acoustic-ness or Low Acoustic-ness
-# nothing in the middle
-
-#  (Solution - 01)
+#  V-2 (using scatter plot along with popularity class)
+#  (Solution - 02)
 ggplot(df_new, aes(x = acousticness, y = track.Popularity, color = popularity_class))+ 
   theme_bw()+ 
   geom_point()+
-  labs(x = "acousticness of track",
+  scale_color_discrete(name="Category of Popularity", labels=c("A-Popularity > 80","B-Popularity > 60","C-Popularity > 40","D-Popularity > 20","E-Popularity > 1"))+
+  labs(x = "Acousticness of track",
        y = "Popularity of track",
-       title = "Acoustic-ness effects on popularity")
+       title = "Popularity Vs Acousticness")
 
-#  (Solution - 02)
+#  (Solution - 01)
 ggplot(df_test, aes(x = acousticness, y = track.Popularity, color = popularity_class))+ 
   theme_bw()+ 
   geom_point()+
-  labs(x = "acousticness of track",
+  scale_color_discrete(name="Category of Popularity", labels=c("A-Popularity > 80","B-Popularity > 60","C-Popularity > 40","D-Popularity > 20","E-Popularity > 1"))+
+  labs(x = "Acousticness of track",
        y = "Popularity of track",
-       title = "Acoustic-ness effects on popularity")
+       title = "Popularity Vs Acousticness")
 
 
-# Visualization that most of my listened songs are in popularity between 40-60 and among Those
-# most of are of scale C(0)
+# On popularity basis, which key of tracks has been listened most(how much)? 
 ggplot(df_new, aes(x = popularity_class, fill = key ))+
   theme_bw() +
   geom_bar() +
+  scale_fill_discrete(name="Pitches", labels=c("0-C", "1-C# Db", "2-D","3-D# Eb","4-E","5-F","6-F# Gb","7-G","8-G# Ab","9-A","10-A# Bb","11-B"))+
   labs( x ="Popularity Class (A(Highest)-E(Lowest))",
-        title = "")
+        title = "Key of tracks Count based on Popularity")
+
+# ***** DONE (above) *****
+
+
 
 # Adding an ID Column in df_new
 df_new$ID <- seq.int(nrow(df_new))
