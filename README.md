@@ -84,4 +84,6 @@ It's clear thing to see, each class has different colour of keys(coloured) and c
 
 ![](readme_images/heat-map%20correlation.jpeg)
 
+Find this on medium by clicking [here](https://medium.com/@shafayet.islam.61/spotify-data-analysis-using-r-and-ggplot2-6b1252d98e8f)
+
 ***This is my very first visualisation using R and ggplot2. Hopefully the code and the process might help you to get some intuition. Thank you.*** 
