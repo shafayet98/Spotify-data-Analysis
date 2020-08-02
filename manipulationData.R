@@ -31,7 +31,7 @@ df$key <- as.factor(df$key)
 ggplot(df, aes(x = key, fill = key))+
   theme_bw()+
   geom_bar()+
-  scale_fill_discrete(name="Pitches", labels=c("0-C", "1-C# Db", "2-D","3-D# Eb","4-E","5-F","6-F# Gb","7-G","8-G# Ab","9-A","10-A# Bb","11-B"))+
+  scale_fill_discrete(name="Key", labels=c("0-C", "1-C# Db", "2-D","3-D# Eb","4-E","5-F","6-F# Gb","7-G","8-G# Ab","9-A","10-A# Bb","11-B"))+
   labs(x = "Keys of tracks",
        y = "Number of tracks",
        title = "Number of tracks Vs. Keys")
@@ -101,13 +101,14 @@ ggplot(df_new, aes(x = popularity_class, fill = key ))+
   labs( x ="Popularity Class (A(Highest)-E(Lowest))",
         title = "Key of tracks Count based on Popularity")
 
-# ***** DONE (above) *****
-
-
-
 # Adding an ID Column in df_new
 df_new$ID <- seq.int(nrow(df_new))
 View(df_new)
+
+#  Now I am making a column on basis of tracks index. so, I am categorizing all tracks in 5 groups where
+#  group A have first 20 tracks and Group B have next 20 songs and so. Let's do it if we can find any 
+#  interesting visuals.
+
 t_c <- sapply(df_new$ID, function(elem){
   if (elem <= 20){return("A")}
   else if(elem <= 40){return("B")}
@@ -118,39 +119,47 @@ t_c <- sapply(df_new$ID, function(elem){
 df_new <- mutate( df_new, top_class = t_c)
 View(df_new)
 
-# On each category (top 20, 2nd 20...) which key (C,C#,A,Ab etc) based track I have listened more??
+# Now Finding out, on each index wise category which keys of tracks were played how many times?
 df_new$top_class <- as.factor(df_new$top_class)
 ggplot(df_new, aes(x = top_class, fill = key ))+
   theme_bw() +
   geom_bar() +
-  labs( x ="Top Base Class",
-        title = "")
+  scale_fill_discrete(name="Pitches", labels=c("0-C", "1-C# Db", "2-D","3-D# Eb","4-E","5-F","6-F# Gb","7-G","8-G# Ab","9-A","10-A# Bb","11-B"))+
+  labs( x ="Category(Index wise)",
+        title = "Count tracks(According to Key) Vs Category(Index wise)")
 
-# Top Song wise Energy Distribution
+
+
+
+# Top tracks wise Energy Distribution
 t_energy <- ggplot(df_new, aes(x = energy, fill = top_class))+
   theme_bw() +
   geom_density( alpha= 0.3) +
+  scale_fill_discrete(name="Category(Index Wise)", labels=c("A-Song(1-20)","B-Song(20-40)","C-Song(41-60)","D-Song(61-80)","E-Song(81-100)"))+
   labs( x ="Energy of tracks",
         title = "Distribution of Enerygy")
 
-# Top Song wise acoustic-ness Distribution
+# Top tracks wise acoustic-ness Distribution
 t_acoustic <- ggplot(df_new, aes(x = acousticness, fill = top_class))+
   theme_bw() +
   geom_density( alpha= 0.3) +
+  scale_fill_discrete(name="Category(Index Wise)", labels=c("A-Song(1-20)","B-Song(20-40)","C-Song(41-60)","D-Song(61-80)","E-Song(81-100)"))+
   labs( x ="acousticness of tracks",
         title = "Distribution of Acousticness")
 
-# Top Song wise loudness Distribution
+# Top tracks wise loudness Distribution
 t_loudness <- ggplot(df_new, aes(x = loudness, fill = top_class))+
   theme_bw() +
   geom_density( alpha= 0.3) +
+  scale_fill_discrete(name="Category(Index Wise)", labels=c("A-Song(1-20)","B-Song(20-40)","C-Song(41-60)","D-Song(61-80)","E-Song(81-100)"))+
   labs( x ="Loudness of tracks",
         title = "Distribution of Loudness")
 
-# Top Song wise Popularity Distribution
+# Top tracks wise Popularity Distribution
 t_popularity <- ggplot(df_new, aes(x = track.Popularity, fill = top_class))+
   theme_bw() +
   geom_density( alpha= 0.3) +
+  scale_fill_discrete(name="Category(Index Wise)", labels=c("A-Song(1-20)","B-Song(20-40)","C-Song(41-60)","D-Song(61-80)","E-Song(81-100)"))+
   labs( x ="Popularity of tracks",
         title = "Distribution of Popularity")
 
@@ -161,14 +170,26 @@ figure <- ggarrange(t_energy, t_loudness, t_acoustic, t_popularity,
 
 figure
 
-# key wise boxplot(range) of energy and loudness
+# Finding out the minimum, maximum, median and all four quartile of energy in each key using boxplot
 key_enery <- ggplot(df_new, aes(x=energy, fill=key)) + 
   geom_boxplot() +
-  facet_wrap(~key)
+  scale_fill_discrete(name="Keys", labels=c("0-C", "1-C# Db", "2-D","3-D# Eb","4-E","5-F","6-F# Gb","7-G","8-G# Ab","9-A","10-A# Bb","11-B"))+
+  facet_wrap(~key)+
+  labs( x ="Energy of tracks",
+        title = "Key wise boxplot of Enerygy")
 
+key_enery
+
+# Finding out the minimum, maximum, median and all four quartile of energy in each key using boxplot
 key_loudness <- ggplot(df_new, aes(x=loudness, fill=key)) + 
   geom_boxplot() +
-  facet_wrap(~key)
+  scale_fill_discrete(name="Keys", labels=c("0-C", "1-C# Db", "2-D","3-D# Eb","4-E","5-F","6-F# Gb","7-G","8-G# Ab","9-A","10-A# Bb","11-B"))+
+  facet_wrap(~key)+
+  labs( x ="Loudness of tracks",
+        title = "Key wise boxplot of Loudness")
+
+key_loudness
+
 
 # Heat-map Correlation
 colnames(df_new)
